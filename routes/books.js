@@ -56,9 +56,9 @@ router.get("/issued/by-user", (req, res) => {
     userWithIssuedBook.forEach((each) => {
         const book = books.find((book) => book.id === each.issuedBook);
         // Adding extra key-value details for individual book
-        // book.issuedBy = each.name;
-        // book.issuedDate = each.issuedDate;
-        // book.returnDate = each.returnDate;
+        book.issuedBy = each.name;
+        book.issuedDate = each.issuedDate;
+        book.returnDate = each.returnDate;
 
         issuedBooks.push(book);
     });
@@ -76,24 +76,31 @@ router.get("/issued/by-user", (req, res) => {
 
 // Route : "/books"
 // Method : POST
-// Description : Post details of a specefic books through their id
+// Description : Add details of a new book
 // Access : Public
 // Parameters : none
 router.post("/", (req, res) => {
-    const { id, name, author, genre, price, publisher } = req.body;
-    const book = books.find((data) => data.id === id);
+    const { data } = req.body;
+    if (!data) {
+        return res.status(404).json({
+            success: false,
+            message: `No data provided !!`,
+        });
+    }
+
+    const book = books.find((each) => each.id === data.id);
     if (book) {
         return res.status(404).json({
             success: false,
-            message: `book with id ${id} already exist !!`,
+            message: `book with id ${data.id} already exist !!`,
         });
     }
-    books.push({
-        id, name, author, genre, price, publisher,
-    });
+
+    const allBooks = [...books, data];
     return res.status(200).json({
         success: true,
-        message: `book with id ${id} added successfully`,
+        message: `book with id ${data.id} added successfully`,
+        data: allBooks,
     });
 });
 
@@ -147,6 +154,7 @@ router.put("/:id", (req, res) => {
 
     return res.status(200).json({
         success: true,
+        message: `Book with id ${id} is updated successfully`,
         data: updatedbook,
     });
 });

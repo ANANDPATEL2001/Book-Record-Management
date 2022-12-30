@@ -1,7 +1,7 @@
 const express = require("express");
 
 // Here users array in (./data/users.json) file is assigned to the users below as a variable & similar for books.json file
-const {users} = require("../data/users.json");
+const { users } = require("../data/users.json");
 
 // Below 'router' is same as that of 'app' we have used so far
 const router = express.Router();
@@ -123,7 +123,7 @@ router.put("/:id", (req, res) => {
 // Access : Public
 // Parameters : id
 router.delete("/:id", (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     const user = users.find((each) => each.id === id);
     if (!user) {
         return res.status(404).json({
@@ -132,14 +132,78 @@ router.delete("/:id", (req, res) => {
         });
     }
     const index = users.indexOf(user);
-    users.splice(index,1);
+    users.splice(index, 1);
 
     return res.status(200).json({
         success: true,
         message: `User with id ${id} deleted successfully`,
-        data : users,
+        data: users,
+    });
+});
+
+// Route : "/users/subscription/:id"
+// Method : GET
+// Description : Get the details of user's subscription through their id
+// Access : Public
+// Parameters : id
+router.get("/subscription-details/:id", (req, res) => {
+    const { id } = req.params;
+    const user = users.find((each) => each.id === id);
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: `User with id ${id} does not exist !!`,
+        });
+    }
+
+    const getDaysByDate = (data = "") => {
+        let date;
+        if (date === "")
+            date = new Date();
+        else
+            date = new Date(data);
+        // Getting date on basis of variable provided
+        let days = Math.floor(date / (1000 * 24 * 60 * 60));
+        return days;
+    };
+
+    const subscriptionType = (date) => {
+        if (user.subscriptionType === "Basic")
+            date += 90;
+        else if (user.subscriptionType === "Standerd")
+            date += 180;
+        else if (user.subscriptionType === "Premium")
+            date += 365;
+
+        return date;
+    };
+    // Now we will calc Subscription
+    let currentDate = getDaysByDate();
+    let returnDate = getDaysByDate(user.returnDate);
+    let subscriptionDate = getDaysByDate(user.subscriptionDate);
+    let subscriptionExpiration = subscriptionType(subscriptionDate);
+
+    // Now we will calc Fine
+    const data = {
+        ...user,
+        subscriptionExpired: subscriptionExpiration < currentDate,
+        daysLeftForExpiration:
+            subscriptionExpiration < currentDate
+                ? 0
+                : subscriptionExpiration - currentDate,
+        Fine:
+            returnDate < currentDate
+                ? subscriptionExpiration - currentDate
+                    ? 200
+                    : 100
+                : 0,
+    };
+
+    return res.status(200).json({
+        success: true,
+        data: data,
     });
 });
 
 // Default export
-module.exports = router;
+module.exports = router; 

@@ -13,7 +13,7 @@ GET: Get a user by their ID
 PUT: Update a user by ID
 DELETE: Delete a user by their ID (Check if the user still has a issued book && is there any file to be collected from the user)
 
-## /user/sunscription-details/{id}
+## /user/subscription-details/{id}
 GET: Get user subscription details
 1. Date of subscription
 2. Valid till ?
@@ -27,8 +27,8 @@ POST: Update a book by {id}
 GET: Get a book by it's {id}
 PUT: Update a book by ID
 
-## /books/issued
-GET: Get all the books here
+## /books/issued/by-user
+GET: Get all the issued books here
 
 ## /books/issued/withFine
 GET: Get all the books with Fine
@@ -42,4 +42,4 @@ If the user has an issued book and issued book is to be returned at 35/12/2022
 and user missed the date of submission, then he gets the fine of Rs.50/-
 
 If the user has an issued book and issued book is to be returned at 35/12/2022
-and user missed the date of submission and  then he gets the fine of Rs.50/-
+and user missed the date of submission also if user's subscription is expires too, he gets the fine of Rs.150/-
