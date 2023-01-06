@@ -43,3 +43,11 @@ and user missed the date of submission, then he gets the fine of Rs.50/-
 
 If the user has an issued book and issued book is to be returned at 35/12/2022
 and user missed the date of submission also if user's subscription is expires too, he gets the fine of Rs.150/-
+
+
+
+<!-- MVC Artitecture
+Modal(Structure), View and Controller
+Modal & Controller related to backend
+View is related to the view i.e. UI
+ -->
